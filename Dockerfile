@@ -1,13 +1,20 @@
-# use a node base image
-FROM node:7-onbuild
+# Use an official Python runtime as a parent image
+FROM python:2.7-slim
 
-# set maintainer
-LABEL maintainer "crudsinfotechng@gmail.com"
+# Set the working directory to /app
+WORKDIR /app
 
-# set a health check
-HEALTHCHECK --interval=5s \
-            --timeout=5s \
-            CMD curl -f http://127.0.0.1:8000 || exit 1
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-# tell docker what port to expose
-EXPOSE 8000
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Define environment variable
+ENV NAME World
+
+# Run app.py when the container launches
+CMD ["python", "app.py"]
